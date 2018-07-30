@@ -1,0 +1,15 @@
+tens:
+
+0 - anger (anger, annoyance, rage)
+1 - anticipation (anticipation, interest, vigilance)
+2 - disgust (disgust, boredom, loathing)
+3 - fear (fear, apprehension, terror)
+4 - joy (joy, serenity, ecstasy)
+5 - sadness (sadness, grief, pensiveness)
+6 - surprise (surprise, distraction, amazement)
+7 - trust (trust, acceptance, admiration)
+8 - idle
+
+ones:
+
+1-5: transitions from different degrees of the same emotion
