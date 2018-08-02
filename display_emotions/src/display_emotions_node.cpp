@@ -1,6 +1,6 @@
 /*
-  This code was developed by Piatan Sfair Palar from LASCA - CPGEI - UTFPR / Curitiba - Brazil
-  you can contact me at piatan@alunos.utfpr.edu.br
+  This package was developed by Piatan Sfair Palar and Andre Schneider de Oliveira from CPGEI - UTFPR / Curitiba - Brazil
+  contact: piatan@alunos.utfpr.edu.br
 */
 #define ECL_MEM_CHECK_ARRAYS
 
@@ -352,6 +352,7 @@ int main(int argc, char** argv)
   ros::Subscriber sub = nh.subscribe("/emotion", 1000, callback);
   image_transport::Publisher pub = it.advertise("/face_emotion", 1);
 
+  // parameters set in launch file
   nh.param("/display_emotions_node/faces_cycle", Param_faces_cycle, true);
   nh.param("/display_emotions_node/faces_cycle_delay", Param_faces_cycle_delay, 0.3);
   if (Param_faces_cycle_delay <= 0) Param_faces_cycle_delay = 0.3;
@@ -368,33 +369,33 @@ int main(int argc, char** argv)
   while (ros::ok()) 
   {
 
-   	pub.publish(ros_image[actual_emotion][frame]);
-	if (frame == 1 || frame == frame_max)
-	{
-		time ++;
-		if (time > ((int)(15*Param_faces_cycle_delay)))
-		{
-			if (!Param_faces_cycle)
+    pub.publish(ros_image[actual_emotion][frame]);
+    if (frame == 1 || frame == frame_max)
+    {
+      time ++;
+      if (time > ((int)(15*Param_faces_cycle_delay)))
       {
-        actual_emotion = emotion_number;
-        frame = frame_max;
-      } 
-      else face_change();
-			pub.publish(ros_image[actual_emotion][frame]);
-		}
-	}
-	else
-	{
-		if (!Param_faces_cycle)
-      {
-        actual_emotion = emotion_number;
-        frame = frame_max;
-      } 
-      else face_change();
-		pub.publish(ros_image[actual_emotion][frame]);
-		time = 0;
-		
-	}
+        if (!Param_faces_cycle)
+        {
+          actual_emotion = emotion_number;
+          frame = frame_max;
+        } 
+        else face_change();
+        pub.publish(ros_image[actual_emotion][frame]);
+      }
+    }
+    else
+    {
+      if (!Param_faces_cycle)
+        {
+          actual_emotion = emotion_number;
+          frame = frame_max;
+        } 
+        else face_change();
+      pub.publish(ros_image[actual_emotion][frame]);
+      time = 0;
+      
+    }
 
    	ros::spinOnce();
    	loop_rate.sleep();
