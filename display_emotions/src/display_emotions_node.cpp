@@ -1,3 +1,7 @@
+/*
+  This code was developed by Piatan Sfair Palar from LASCA - CPGEI - UTFPR / Curitiba - Brazil
+  you can contact me at piatan@alunos.utfpr.edu.br
+*/
 #define ECL_MEM_CHECK_ARRAYS
 
 #include <ros/ros.h>
@@ -5,8 +9,6 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
-#include <string.h>
-#include <stdio.h>
 #include <iostream>
 #include <unistd.h>
 #include "std_msgs/String.h"
@@ -18,15 +20,19 @@ char path[300];
 char name[3], ext[5];
 sensor_msgs::Image ros_image[9][6];
 cv_bridge::CvImage cv_image[9][6]; 
-char emotion_name[30];
+std::string emotion_name;
 int frame = 1;
 int direction = 0;
 int emotion_number = 8; 
 int actual_emotion = 8;
 int frame_max = 5;
+bool Param_faces_cycle;
+double Param_faces_cycle_delay;
+std::string Param_speech_gender;
 
 // rotation between the emotions in the same category
-void face_change(){
+void face_change()
+{
 
    if (frame == 1) {
         actual_emotion = emotion_number;
@@ -46,7 +52,8 @@ void face_change(){
 }
 
 // loading the images to working memory
-void load_faces(){
+void load_faces()
+{
   
   for(int i=0;i<9;i++)
   {
@@ -74,192 +81,200 @@ void load_faces(){
   }
 }
 
-// switching speech charateristics 
+// routine that dynamically changes the parameters on espeak node 
 void reconfigure (char *param, int value)
 {
 
-	char reconfigure_msg[100], node[100], svalue[4];
+  char reconfigure_msg[100], node[100], svalue[4];
 	strcpy(node, "rosrun dynamic_reconfigure dynparam set /espeak_node ");
 	strcpy(reconfigure_msg,node);
 	strcat(reconfigure_msg, param);
 	sprintf(svalue, " %d &", value);
 	strcat(reconfigure_msg,svalue);
-	system(reconfigure_msg);
+  system(reconfigure_msg);
 
 }
 
+// callback to read emotion request
 void callback(const std_msgs::String::ConstPtr& msg)
 {
     ROS_WARN("Emotion changed to [%s]", msg->data.c_str());
-    strcpy(emotion_name,msg->data.c_str());
-                      
-    if (strcmp(emotion_name,"annoyance")==0)
+    emotion_name = msg->data;
+
+    if (emotion_name == "annoyance")
     {
 		  emotion_number = 0;
 		  frame_max = 2;
     }
-    else if (strcmp(emotion_name,"much_annoyance")==0)
+    else if (emotion_name == "much_annoyance")
     {
 		  emotion_number = 0;
 		  frame_max = 3;
     }
-    else if (strcmp(emotion_name,"anger")==0)
+    else if (emotion_name == "anger")
     {
 		  emotion_number = 0;
 		  frame_max = 4;
     }
-    else if (strcmp(emotion_name,"rage")==0)
+    else if (emotion_name == "rage")
     {
 		  emotion_number = 0;
 		  frame_max = 5;
     }
-    else if (strcmp(emotion_name,"interest")==0)
+    else if (emotion_name == "interest")
     {
       emotion_number = 1;
 		  frame_max = 2;
     }
-    else if (strcmp(emotion_name,"much_interest")==0)
+    else if (emotion_name == "much_interest")
     {
       emotion_number = 1;
 		  frame_max = 3;
     }
-    else if (strcmp(emotion_name,"anticipation")==0)
+    else if (emotion_name == "anticipation")
     {
       emotion_number = 1;
 		  frame_max = 4;
     }
-    else if (strcmp(emotion_name,"vigilance")==0)
+    else if (emotion_name == "vigilance")
     {
       emotion_number = 1;
 		  frame_max = 5;
     }
-    else if (strcmp(emotion_name,"boredom")==0)
+    else if (emotion_name == "boredom")
     {
       emotion_number = 2;
 		  frame_max = 2;
     }
-    else if (strcmp(emotion_name,"much_boredom")==0)
+    else if (emotion_name == "much_boredom")
     {
       emotion_number = 2;
 		  frame_max = 3;
     }
-    else if (strcmp(emotion_name,"disgust")==0)
+    else if (emotion_name == "disgust")
     {
       emotion_number = 2;
 		  frame_max = 4;
     }
-    else if (strcmp(emotion_name,"loathing")==0)
+    else if (emotion_name == "loathing")
     {
       emotion_number = 2;
 		  frame_max = 5;
     }
-    else if (strcmp(emotion_name,"apprehension")==0)
+    else if (emotion_name == "apprehension")
     {
       emotion_number = 3;
 		  frame_max = 2;
     }
-    else if (strcmp(emotion_name,"much_apprehension")==0)
+    else if (emotion_name == "much_apprehension")
     {
       emotion_number = 3;
 		  frame_max = 3;
     }
-    else if (strcmp(emotion_name,"fear")==0)
+    else if (emotion_name == "fear")
     {
       emotion_number = 3;
 		  frame_max = 4;
     }
-    else if (strcmp(emotion_name,"terror")==0)
+    else if (emotion_name == "terror")
     {
      emotion_number = 3;
 		  frame_max = 5;
     }
-    else if (strcmp(emotion_name,"serenity")==0)
+    else if (emotion_name == "serenity")
     {
       emotion_number = 4;
 		  frame_max = 2;
     }
-    else if (strcmp(emotion_name,"much_serenity")==0)
+    else if (emotion_name == "much_serenity")
     {
       emotion_number = 4;
 		  frame_max = 3;
     }
-    else if (strcmp(emotion_name,"joy")==0)
+    else if (emotion_name == "joy")
     {
       emotion_number = 4;
 		  frame_max = 4;
     }
-    else if (strcmp(emotion_name,"ecstasy")==0)
+    else if (emotion_name == "ecstasy")
     {
       emotion_number = 4;
 		  frame_max = 5;
     }
-    else if (strcmp(emotion_name,"pensiveness")==0)
+    else if (emotion_name == "pensiveness")
     {
       emotion_number = 5;
 		  frame_max = 2;
     }
-    else if (strcmp(emotion_name,"much_pensiveness")==0)
+    else if (emotion_name == "much_pensiveness")
     {
       emotion_number = 5;
 		  frame_max = 3;
     }
-    else if (strcmp(emotion_name,"sadness")==0)
+    else if (emotion_name == "sadness")
     {
       emotion_number = 5;
 		  frame_max = 4;
     }
-    else if (strcmp(emotion_name,"grief")==0)
+    else if (emotion_name == "grief")
     {
       emotion_number = 5;
 		  frame_max = 5;
     }
-    else if (strcmp(emotion_name,"distraction")==0)
+    else if (emotion_name == "distraction")
     {
     	emotion_number = 6; 
 		  frame_max = 2;
     }
-    else if (strcmp(emotion_name,"much_distraction")==0)
+    else if (emotion_name == "much_distraction")
     {
     	emotion_number = 6; 
 		  frame_max = 3;
     }
-    else if (strcmp(emotion_name,"surprise")==0)
+    else if (emotion_name == "surprise")
     {
     	emotion_number = 6; 
 		  frame_max = 4;
     }
-    else if (strcmp(emotion_name,"amazement")==0)
+    else if (emotion_name == "amazement")
     {
     	emotion_number = 6; 
 		  frame_max = 5;
     }
-    else if (strcmp(emotion_name,"acceptance")==0)
+    else if (emotion_name == "acceptance")
     {
     	emotion_number = 7; 
 		  frame_max = 2;
     }
-    else if (strcmp(emotion_name,"much_acceptance")==0)
+    else if (emotion_name == "much_acceptance")
     {
     	emotion_number = 7; 
 		  frame_max = 3;
     }
-    else if (strcmp(emotion_name,"trust")==0)
+    else if (emotion_name == "trust")
     {
     	emotion_number = 7; 
 		  frame_max = 4;
     }
-    else if (strcmp(emotion_name,"admiration")==0)
+    else if (emotion_name == "admiration")
     {
     	emotion_number = 7; 
 		  frame_max = 5;
     }
-    else if (strcmp(emotion_name,"idle")==0)
+    else if (emotion_name == "idle")
     {
     	emotion_number = 8; 
 		  frame_max = 5;
     }
-    else if (strcmp(emotion_name,"help")==0)
+    else if (emotion_name == "help")
 	ROS_INFO("The full list of emotions is: annoyance, much_annoyance, anger, rage, interest, much_interest, anticipation, vigilance, boredom, much_boredom, disgust, loathing, apprehension, much_apprehension, fear, terror, serenity, much_serenity, joy, ecstasy, pensiveness, much_pensiveness, sadness, grief, distraction, much_distraction, surprise, amazement, acceptance, much_acceptance, trust, admiration, idle.");
+  
+  // switching speech charateristics
+  if (Param_speech_gender == "female")
+  {
+    reconfigure((char *)"gender",2);
+  }
+  else reconfigure((char *)"gender",1);
 
 	if (emotion_number == 0) // rage
 	{
@@ -269,7 +284,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
     reconfigure((char *)"range",85);
     reconfigure((char *)"wordgap",100);
 	}
-  if (emotion_number == 1) // vigilance
+  else if (emotion_number == 1) // vigilance
 	{
     reconfigure((char *)"rate",300);
     reconfigure((char *)"volume",150);
@@ -277,7 +292,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
     reconfigure((char *)"range",50);
     reconfigure((char *)"wordgap",10);
 	}
-  if (emotion_number == 2) // disgust
+  else if (emotion_number == 2) // disgust
 	{
     reconfigure((char *)"rate",90);
     reconfigure((char *)"volume",50);
@@ -285,7 +300,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
     reconfigure((char *)"range",70);
     reconfigure((char *)"wordgap",10);
 	}
-  if (emotion_number == 3) // fear
+  else if (emotion_number == 3) // fear
 	{
     reconfigure((char *)"rate",300);
     reconfigure((char *)"volume",100);
@@ -293,7 +308,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
     reconfigure((char *)"range",85);
     reconfigure((char *)"wordgap",200);
 	}
-  if (emotion_number == 4) // joy
+  else if (emotion_number == 4) // joy
 	{
     reconfigure((char *)"rate",200);
     reconfigure((char *)"volume",150);
@@ -301,7 +316,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
     reconfigure((char *)"range",85);
     reconfigure((char *)"wordgap",10);
 	}
-  if (emotion_number == 5) // sadness
+  else if (emotion_number == 5) // sadness
 	{
     reconfigure((char *)"rate",150);
     reconfigure((char *)"volume",50);
@@ -309,7 +324,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
     reconfigure((char *)"range",35);
     reconfigure((char *)"wordgap",0);
 	}
-  if (emotion_number == 6) // surprise
+  else if (emotion_number == 6) // surprise
 	{
     reconfigure((char *)"rate",300);
     reconfigure((char *)"volume",150);
@@ -317,7 +332,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
     reconfigure((char *)"range",50);
     reconfigure((char *)"wordgap",10);
 	}
-  if (emotion_number == 7) // trust
+  else if (emotion_number == 7) // trust
 	{
     reconfigure((char *)"rate",175);
     reconfigure((char *)"volume",100);
@@ -336,7 +351,13 @@ int main(int argc, char** argv)
   image_transport::ImageTransport it(nh);
   ros::Subscriber sub = nh.subscribe("/emotion", 1000, callback);
   image_transport::Publisher pub = it.advertise("/face_emotion", 1);
-  ros::Rate loop_rate(7);
+
+  nh.param("/display_emotions_node/faces_cycle", Param_faces_cycle, true);
+  nh.param("/display_emotions_node/faces_cycle_delay", Param_faces_cycle_delay, 0.3);
+  if (Param_faces_cycle_delay <= 0) Param_faces_cycle_delay = 0.3;
+  nh.param<std::string>("/display_emotions_node/speech_gender", Param_speech_gender, "male");
+
+  ros::Rate loop_rate(1/Param_faces_cycle_delay);
 
   load_faces();
   int time = 0;
@@ -351,15 +372,25 @@ int main(int argc, char** argv)
 	if (frame == 1 || frame == frame_max)
 	{
 		time ++;
-		if (time > 15)
+		if (time > ((int)(15*Param_faces_cycle_delay)))
 		{
-			face_change();
+			if (!Param_faces_cycle)
+      {
+        actual_emotion = emotion_number;
+        frame = frame_max;
+      } 
+      else face_change();
 			pub.publish(ros_image[actual_emotion][frame]);
 		}
 	}
 	else
 	{
-		face_change();
+		if (!Param_faces_cycle)
+      {
+        actual_emotion = emotion_number;
+        frame = frame_max;
+      } 
+      else face_change();
 		pub.publish(ros_image[actual_emotion][frame]);
 		time = 0;
 		
