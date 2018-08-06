@@ -16,62 +16,62 @@
 #include <image_transport/image_transport.h>
 
 // global variables
-char path[300];
-char name[3], ext[5];
 sensor_msgs::Image ros_image[9][6];
 cv_bridge::CvImage cv_image[9][6]; 
-std::string emotion_name;
-int frame = 1;
-int direction = 0;
-int emotion_number = 8; 
-int actual_emotion = 8;
-int frame_max = 5;
-bool Param_faces_cycle;
-double Param_faces_cycle_delay;
-std::string Param_speech_gender;
+std::string emotion_name; // the name of the emotion, read in the topic /emotion
+int frame_direction = 0; // the descending (0) or ascending (1) direction of swapping emotion degree
+int current_emotion_degree = 1; // the current degree of the emotion being displayed
+int desired_emotion_class = 8; // the class of emotions being requested by the user
+int current_emotion_class = 8; // the current emotion class. It only changes to the desired class in the first degree
+int desired_emotion_degree = 5; // the desired degree of the emotion. The faces being displayed will max on this value
+
+// ROS params
+bool Param_faces_cycle; // when activated cycle between the emotion requested and the lesser degrees of the same emotion. If set to false, only the requested emotion is displayed
+double Param_faces_cycle_delay; // only active if /faces_cycle is set to true. This parameter sets the delay to cycle between emotions of the same class
+std::string Param_speech_gender; // changes the gender of the speaker. It only accepts the values "male" and "female"
 
 // rotation between the emotions in the same category
 void face_change()
 {
-
-   if (frame == 1) {
-        actual_emotion = emotion_number;
+   
+   if (current_emotion_degree == 1) { // only swaps the emotion in the first image frame
+        current_emotion_class = desired_emotion_class;  
    }
 
-    if (direction==0 && frame <= frame_max)   
-        frame++;
+    if (frame_direction == 0 && current_emotion_degree <= desired_emotion_degree)   
+        current_emotion_degree++;
     else
-        frame--;
+        current_emotion_degree--;
 
-    if (frame>=5 || frame == frame_max)
-      direction = 1;
+    if (current_emotion_degree >= 5 || current_emotion_degree == desired_emotion_degree)
+      frame_direction = 1;
 
-    if (frame<=1)
-      direction = 0;
+    if (current_emotion_degree <= 1)
+      frame_direction = 0;
 
 }
 
 // loading the images to working memory
 void load_faces()
 {
-  
+  std::string folder, ext, path;
+  char name[3];
+
   for(int i=0;i<9;i++)
   {
     for(int j=1;j<6;j++)
     {
       
-      std::string folder = ros::package::getPath("display_emotions");
-      strcpy(path,folder.c_str());  
-      strcat(path, "/src/images/"); 
+      folder = ros::package::getPath("display_emotions") + "/src/images/"; 
 
+      // tranforming the current number on i and j to a string with that numbers
       name[0] = (char)i+48; 
       name[1] = (char)j+48;
       name[2] = 0;
-      strcat(path,name);
     
-      strcpy(ext,".png");
-      ext[4] = 0;
-      strcat(path,ext);
+      ext = ".png";
+
+      path = folder + name + ext;
 
       cv_image[i][j].image = cv::imread(path,CV_LOAD_IMAGE_COLOR);
       cv_image[i][j].encoding = "bgr8";
@@ -103,168 +103,168 @@ void callback(const std_msgs::String::ConstPtr& msg)
 
     if (emotion_name == "annoyance")
     {
-		  emotion_number = 0;
-		  frame_max = 2;
+		  desired_emotion_class = 0;
+		  desired_emotion_degree = 2;
     }
     else if (emotion_name == "much_annoyance")
     {
-		  emotion_number = 0;
-		  frame_max = 3;
+		  desired_emotion_class = 0;
+		  desired_emotion_degree = 3;
     }
     else if (emotion_name == "anger")
     {
-		  emotion_number = 0;
-		  frame_max = 4;
+		  desired_emotion_class = 0;
+		  desired_emotion_degree = 4;
     }
     else if (emotion_name == "rage")
     {
-		  emotion_number = 0;
-		  frame_max = 5;
+		  desired_emotion_class = 0;
+		  desired_emotion_degree = 5;
     }
     else if (emotion_name == "interest")
     {
-      emotion_number = 1;
-		  frame_max = 2;
+      desired_emotion_class = 1;
+		  desired_emotion_degree = 2;
     }
     else if (emotion_name == "much_interest")
     {
-      emotion_number = 1;
-		  frame_max = 3;
+      desired_emotion_class = 1;
+		  desired_emotion_degree = 3;
     }
     else if (emotion_name == "anticipation")
     {
-      emotion_number = 1;
-		  frame_max = 4;
+      desired_emotion_class = 1;
+		  desired_emotion_degree = 4;
     }
     else if (emotion_name == "vigilance")
     {
-      emotion_number = 1;
-		  frame_max = 5;
+      desired_emotion_class = 1;
+		  desired_emotion_degree = 5;
     }
     else if (emotion_name == "boredom")
     {
-      emotion_number = 2;
-		  frame_max = 2;
+      desired_emotion_class = 2;
+		  desired_emotion_degree = 2;
     }
     else if (emotion_name == "much_boredom")
     {
-      emotion_number = 2;
-		  frame_max = 3;
+      desired_emotion_class = 2;
+		  desired_emotion_degree = 3;
     }
     else if (emotion_name == "disgust")
     {
-      emotion_number = 2;
-		  frame_max = 4;
+      desired_emotion_class = 2;
+		  desired_emotion_degree = 4;
     }
     else if (emotion_name == "loathing")
     {
-      emotion_number = 2;
-		  frame_max = 5;
+      desired_emotion_class = 2;
+		  desired_emotion_degree = 5;
     }
     else if (emotion_name == "apprehension")
     {
-      emotion_number = 3;
-		  frame_max = 2;
+      desired_emotion_class = 3;
+		  desired_emotion_degree = 2;
     }
     else if (emotion_name == "much_apprehension")
     {
-      emotion_number = 3;
-		  frame_max = 3;
+      desired_emotion_class = 3;
+		  desired_emotion_degree = 3;
     }
     else if (emotion_name == "fear")
     {
-      emotion_number = 3;
-		  frame_max = 4;
+      desired_emotion_class = 3;
+		  desired_emotion_degree = 4;
     }
     else if (emotion_name == "terror")
     {
-     emotion_number = 3;
-		  frame_max = 5;
+     desired_emotion_class = 3;
+		  desired_emotion_degree = 5;
     }
     else if (emotion_name == "serenity")
     {
-      emotion_number = 4;
-		  frame_max = 2;
+      desired_emotion_class = 4;
+		  desired_emotion_degree = 2;
     }
     else if (emotion_name == "much_serenity")
     {
-      emotion_number = 4;
-		  frame_max = 3;
+      desired_emotion_class = 4;
+		  desired_emotion_degree = 3;
     }
     else if (emotion_name == "joy")
     {
-      emotion_number = 4;
-		  frame_max = 4;
+      desired_emotion_class = 4;
+		  desired_emotion_degree = 4;
     }
     else if (emotion_name == "ecstasy")
     {
-      emotion_number = 4;
-		  frame_max = 5;
+      desired_emotion_class = 4;
+		  desired_emotion_degree = 5;
     }
     else if (emotion_name == "pensiveness")
     {
-      emotion_number = 5;
-		  frame_max = 2;
+      desired_emotion_class = 5;
+		  desired_emotion_degree = 2;
     }
     else if (emotion_name == "much_pensiveness")
     {
-      emotion_number = 5;
-		  frame_max = 3;
+      desired_emotion_class = 5;
+		  desired_emotion_degree = 3;
     }
     else if (emotion_name == "sadness")
     {
-      emotion_number = 5;
-		  frame_max = 4;
+      desired_emotion_class = 5;
+		  desired_emotion_degree = 4;
     }
     else if (emotion_name == "grief")
     {
-      emotion_number = 5;
-		  frame_max = 5;
+      desired_emotion_class = 5;
+		  desired_emotion_degree = 5;
     }
     else if (emotion_name == "distraction")
     {
-    	emotion_number = 6; 
-		  frame_max = 2;
+    	desired_emotion_class = 6; 
+		  desired_emotion_degree = 2;
     }
     else if (emotion_name == "much_distraction")
     {
-    	emotion_number = 6; 
-		  frame_max = 3;
+    	desired_emotion_class = 6; 
+		  desired_emotion_degree = 3;
     }
     else if (emotion_name == "surprise")
     {
-    	emotion_number = 6; 
-		  frame_max = 4;
+    	desired_emotion_class = 6; 
+		  desired_emotion_degree = 4;
     }
     else if (emotion_name == "amazement")
     {
-    	emotion_number = 6; 
-		  frame_max = 5;
+    	desired_emotion_class = 6; 
+		  desired_emotion_degree = 5;
     }
     else if (emotion_name == "acceptance")
     {
-    	emotion_number = 7; 
-		  frame_max = 2;
+    	desired_emotion_class = 7; 
+		  desired_emotion_degree = 2;
     }
     else if (emotion_name == "much_acceptance")
     {
-    	emotion_number = 7; 
-		  frame_max = 3;
+    	desired_emotion_class = 7; 
+		  desired_emotion_degree = 3;
     }
     else if (emotion_name == "trust")
     {
-    	emotion_number = 7; 
-		  frame_max = 4;
+    	desired_emotion_class = 7; 
+		  desired_emotion_degree = 4;
     }
     else if (emotion_name == "admiration")
     {
-    	emotion_number = 7; 
-		  frame_max = 5;
+    	desired_emotion_class = 7; 
+		  desired_emotion_degree = 5;
     }
     else if (emotion_name == "idle")
     {
-    	emotion_number = 8; 
-		  frame_max = 5;
+    	desired_emotion_class = 8; 
+		  desired_emotion_degree = 5;
     }
     else if (emotion_name == "help")
 	ROS_INFO("The full list of emotions is: annoyance, much_annoyance, anger, rage, interest, much_interest, anticipation, vigilance, boredom, much_boredom, disgust, loathing, apprehension, much_apprehension, fear, terror, serenity, much_serenity, joy, ecstasy, pensiveness, much_pensiveness, sadness, grief, distraction, much_distraction, surprise, amazement, acceptance, much_acceptance, trust, admiration, idle.");
@@ -276,7 +276,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
   }
   else reconfigure((char *)"gender",1);
 
-	if (emotion_number == 0) // rage
+	if (desired_emotion_class == 0) // rage
 	{
     reconfigure((char *)"rate",250);
     reconfigure((char *)"volume",150);
@@ -284,7 +284,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
     reconfigure((char *)"range",85);
     reconfigure((char *)"wordgap",100);
 	}
-  else if (emotion_number == 1) // vigilance
+  else if (desired_emotion_class == 1) // vigilance
 	{
     reconfigure((char *)"rate",300);
     reconfigure((char *)"volume",150);
@@ -292,7 +292,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
     reconfigure((char *)"range",50);
     reconfigure((char *)"wordgap",10);
 	}
-  else if (emotion_number == 2) // disgust
+  else if (desired_emotion_class == 2) // disgust
 	{
     reconfigure((char *)"rate",90);
     reconfigure((char *)"volume",50);
@@ -300,7 +300,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
     reconfigure((char *)"range",70);
     reconfigure((char *)"wordgap",10);
 	}
-  else if (emotion_number == 3) // fear
+  else if (desired_emotion_class == 3) // fear
 	{
     reconfigure((char *)"rate",300);
     reconfigure((char *)"volume",100);
@@ -308,7 +308,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
     reconfigure((char *)"range",85);
     reconfigure((char *)"wordgap",200);
 	}
-  else if (emotion_number == 4) // joy
+  else if (desired_emotion_class == 4) // joy
 	{
     reconfigure((char *)"rate",200);
     reconfigure((char *)"volume",150);
@@ -316,7 +316,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
     reconfigure((char *)"range",85);
     reconfigure((char *)"wordgap",10);
 	}
-  else if (emotion_number == 5) // sadness
+  else if (desired_emotion_class == 5) // sadness
 	{
     reconfigure((char *)"rate",150);
     reconfigure((char *)"volume",50);
@@ -324,7 +324,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
     reconfigure((char *)"range",35);
     reconfigure((char *)"wordgap",0);
 	}
-  else if (emotion_number == 6) // surprise
+  else if (desired_emotion_class == 6) // surprise
 	{
     reconfigure((char *)"rate",300);
     reconfigure((char *)"volume",150);
@@ -332,7 +332,7 @@ void callback(const std_msgs::String::ConstPtr& msg)
     reconfigure((char *)"range",50);
     reconfigure((char *)"wordgap",10);
 	}
-  else if (emotion_number == 7) // trust
+  else if (desired_emotion_class == 7) // trust
 	{
     reconfigure((char *)"rate",175);
     reconfigure((char *)"volume",100);
@@ -369,30 +369,30 @@ int main(int argc, char** argv)
   while (ros::ok()) 
   {
 
-    pub.publish(ros_image[actual_emotion][frame]);
-    if (frame == 1 || frame == frame_max)
+    pub.publish(ros_image[current_emotion_class][current_emotion_degree]);
+    if (current_emotion_degree == 1 || current_emotion_degree == desired_emotion_degree)
     {
       time ++;
       if (time > ((int)(15*Param_faces_cycle_delay)))
       {
         if (!Param_faces_cycle)
         {
-          actual_emotion = emotion_number;
-          frame = frame_max;
+          current_emotion_class = desired_emotion_class;
+          current_emotion_degree = desired_emotion_degree;
         } 
         else face_change();
-        pub.publish(ros_image[actual_emotion][frame]);
+        pub.publish(ros_image[current_emotion_class][current_emotion_degree]);
       }
     }
     else
     {
       if (!Param_faces_cycle)
         {
-          actual_emotion = emotion_number;
-          frame = frame_max;
+          current_emotion_class = desired_emotion_class;
+          current_emotion_degree = desired_emotion_degree;
         } 
         else face_change();
-      pub.publish(ros_image[actual_emotion][frame]);
+      pub.publish(ros_image[current_emotion_class][current_emotion_degree]);
       time = 0;
       
     }
