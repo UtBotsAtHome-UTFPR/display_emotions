@@ -16,3 +16,8 @@ roslaunch display_emotions display_emotions.launch
 And then publish a message of type String to the topic /emotion:
 
 rostopic pub /emotion std_msgs/String "data: 'joy'"
+
+Parameters:
+
+faces_cycle: make the images cycle between the most intense emotion desired or stay still at the emotion set (default: true)
+faces_cycle_delay: the delay in seconds to shift between emotions (only active if faces_cycle is active)
