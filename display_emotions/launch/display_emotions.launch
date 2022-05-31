@@ -1,0 +1,11 @@
+<launch>
+
+	<!-- Display faces -->  
+	<node pkg="display_emotions" type="display_emotions_node" name="display_emotions_node" output="screen">
+		<param name="faces_cycle" type="bool" value="true"/>
+		<param name="faces_cycle_delay" type="double" value="0.5"/>
+		<param name="speech_gender" type="string" value="male"/>
+	</node>
+
+</launch>
+
