@@ -7,7 +7,7 @@ sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
 
 The full list of emotions accepted is:
 
-anger, annoyance, rage, anticipation, interest, vigilance, disgust, boredom, loathing, fear, apprehension, terror, joy, serenity, ecstasy, sadness, grief, pensiveness, surprise, distraction, amazement, trust, acceptance, admiration, idle
+annoyance, much_annoyance, anger, rage, interest, much_interest, anticipation, vigilance, boredom, much_boredom, disgust, loathing, apprehension, much_apprehension, fear, terror, serenity, much_serenity, joy, ecstasy, pensiveness, much_pensiveness, sadness, grief, distraction, much_distraction, surprise, amazement, acceptance, much_acceptance, trust, admiration, idle
 
 To display an emotion, first run the launch file:
 
