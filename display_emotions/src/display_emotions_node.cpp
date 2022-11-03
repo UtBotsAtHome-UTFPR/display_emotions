@@ -73,7 +73,7 @@ void load_faces()
 
       path = folder + name + ext;
 
-      cv_image[i][j].image = cv::imread(path,CV_LOAD_IMAGE_COLOR);
+      cv_image[i][j].image = cv::imread(path,cv::IMREAD_COLOR);
       cv_image[i][j].encoding = "bgr8";
       cv_image[i][j].toImageMsg(ros_image[i][j]);
 
@@ -89,7 +89,7 @@ void reconfigure (char *param, int value)
 	strcpy(node, "rosrun dynamic_reconfigure dynparam set /espeak_node ");
 	strcpy(reconfigure_msg,node);
 	strcat(reconfigure_msg, param);
-	sprintf(svalue, " %d &", value);
+	//sprintf(svalue, " %d &", value);
 	strcat(reconfigure_msg,svalue);
   system(reconfigure_msg);
 
