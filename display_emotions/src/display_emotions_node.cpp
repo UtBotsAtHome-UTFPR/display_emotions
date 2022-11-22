@@ -62,7 +62,8 @@ void load_faces()
     for(int j=1;j<6;j++)
     {
       
-      folder = ros::package::getPath("display_emotions") + "/src/images/"; 
+      folder = ros::package::getPath("display_emotions") + "/src/cropped/"; //Cropped images to Display Resolution
+      //folder = ros::package::getPath("display_emotions") + "/src/images/"; 
 
       // tranforming the current number on i and j to a string with that numbers
       name[0] = (char)i+48; 
