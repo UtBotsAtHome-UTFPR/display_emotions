@@ -3,7 +3,6 @@ ROS package that displays emotions through faces. Working in Kinetic and Melodic
 
 Please install the following dependencies before running the package:
 
-```sudo apt-get install espeak espeak-data libespeak-dev```
 ```sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev```
 
 ## The full list of emotions accepted is:
