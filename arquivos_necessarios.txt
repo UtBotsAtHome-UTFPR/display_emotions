@@ -1,3 +1,0 @@
-sudo apt-get install espeak espeak-data libespeak-dev
-sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
-
