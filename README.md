@@ -23,7 +23,7 @@ catkin_make
 
 An **idle** face is displayed by default if no other emotion is requested. Also, eight basic emotions are possible, alongside two Low Intensity variations and one High Intensity variation for each. All of them can be requested to be displayed, even the idle face.
 
-|Basic Emotion|Low Intensity|High Intensity|
+|*Basic Emotion*|*Low Intensity*|*High Intensity*|
 | -------- | -------- | -------- |
 |**joy**|**serenity** and **much_serenity**|**ecstasy**|
 |**trust**|**acceptance** and **much_acceptance**|**admiration**|
