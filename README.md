@@ -14,7 +14,7 @@ Then install the package in your catkin workspace:
 cd catkin_ws/src/
 git clone https://github.com/UtBotsAtHome-UTFPR/display_emotions.git
 
-# Complie workspace
+# Compile workspace
 cd ..
 catkin_make
 ```
