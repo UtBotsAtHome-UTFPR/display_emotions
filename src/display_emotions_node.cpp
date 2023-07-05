@@ -254,17 +254,16 @@ void callback(const std_msgs::String::ConstPtr &msg)
 
 int main(int argc, char **argv)
 {
-
   ros::init(argc, argv, "display_emotions_node");
   ros::NodeHandle nh;
   image_transport::ImageTransport it(nh);
-  ros::Subscriber sub             = nh.subscribe("emotion", 1000, callback);
-  image_transport::Publisher pub  = it.advertise("image", 1);
+  ros::Subscriber sub             = nh.subscribe("/utbots/display_emotions/emotion", 1000, callback);
+  image_transport::Publisher pub  = it.advertise("/utbots/display_emotions/image", 1);
 
   // parameters set in launch file
-  nh.param("/voice/emotion/display_emotions_node/faces_cycle", Param_faces_cycle, true);
-  nh.param("/voice/emotion/display_emotions_node/faces_cycle_delay", Param_faces_cycle_delay, 0.3);
-  nh.param<std::string>("/voice/emotion/display_emotions_node/speech_gender", Param_speech_gender, "male");
+  nh.param("/display_emotions_node/faces_cycle", Param_faces_cycle, true);
+  nh.param("/display_emotions_node/faces_cycle_delay", Param_faces_cycle_delay, 0.25);
+  nh.param<std::string>("/display_emotions_node/speech_gender", Param_speech_gender, "male");
 
   if (Param_faces_cycle_delay <= 0)
     Param_faces_cycle_delay = 0.3;
@@ -282,7 +281,6 @@ int main(int argc, char **argv)
 
   while (ros::ok())
   {
-
     pub.publish(ros_image[current_emotion_class][current_emotion_degree]);
     if (current_emotion_degree == 1 || current_emotion_degree == desired_emotion_degree)
     {
