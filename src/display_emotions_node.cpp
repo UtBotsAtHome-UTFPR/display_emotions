@@ -29,12 +29,17 @@ int                 desired_emotion_degree  = 5;  // the desired degree of the e
 bool        Param_faces_cycle;        // when activated cycle between the emotion requested and the lesser degrees of the same emotion. If set to false, only the requested emotion is displayed
 double      Param_faces_cycle_delay;  // only active if /faces_cycle is set to true. This parameter sets the delay to cycle between emotions of the same class
 std::string Param_speech_gender;      // changes the gender of the speaker. It only accepts the values "male" and "female"
+bool        Param_reset_to_idle;      // if true displays only one cycle for a subscribed emotion and then resets the emotion to idle
 
 // rotation between the emotions in the same category
 void face_change()
 {
   if (current_emotion_degree == 1) // only swaps the emotion in the first image frame
+  {  
     current_emotion_class = desired_emotion_class;
+    if (frame_direction == 0 && Param_reset_to_idle == true) // resets the emotion to idle at the end of a face cycle
+      desired_emotion_class = 8; // idle class
+  }
 
   if (frame_direction == 0 && current_emotion_degree <= desired_emotion_degree)
     current_emotion_degree++;
@@ -45,7 +50,11 @@ void face_change()
     frame_direction = 1;
 
   if (current_emotion_degree <= 1)
+  {
     frame_direction = 0;
+  }
+  std::cout<<current_emotion_class<<std::endl;
+  std::cout<<current_emotion_degree<<std::endl;
 }
 
 // loading the images to working memory
@@ -264,6 +273,7 @@ int main(int argc, char **argv)
   nh.param("/display_emotions_node/faces_cycle", Param_faces_cycle, true);
   nh.param("/display_emotions_node/faces_cycle_delay", Param_faces_cycle_delay, 0.25);
   nh.param<std::string>("/display_emotions_node/speech_gender", Param_speech_gender, "male");
+  nh.param("/display_emotions_node/reset_to_idle", Param_reset_to_idle, false);
 
   if (Param_faces_cycle_delay <= 0)
     Param_faces_cycle_delay = 0.3;
@@ -293,6 +303,7 @@ int main(int argc, char **argv)
           current_emotion_degree = desired_emotion_degree;
         }
         else
+          // desired_emotion_class = 8;
           face_change();
         pub.publish(ros_image[current_emotion_class][current_emotion_degree]);
       }
