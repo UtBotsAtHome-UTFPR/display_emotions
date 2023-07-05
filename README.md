@@ -44,7 +44,7 @@ An **idle** face is displayed by default if no other emotion is requested. Also,
 
 ### And then publish a message of type String to the topic /emotion:
 
-    rostopic pub /emotion std_msgs/String "data: 'joy'"
+    rostopic pub /utbots/display_emotions/emotion std_msgs/String "data: 'joy'"
 
 ## Parameters:
 
