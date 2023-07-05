@@ -51,3 +51,5 @@ An **idle** face is displayed by default if no other emotion is requested. Also,
 - **faces_cycle**: make the images cycle between the most intense emotion desired or stay still at the emotion set (default: true)
 
 - **faces_cycle_delay**: the delay in seconds to shift between emotions (only active if faces_cycle is active)
+
+- **reset_to_idle**: if true displays only one cycle for a subscribed emotion and then resets the emotion to idle

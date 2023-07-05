@@ -287,7 +287,7 @@ int main(int argc, char **argv)
   int time = 0;
 
   // if you want to see the image, uncomment the line below
-  // system("rosrun image_view image_view image:=/face_emotion &");
+  // system("rosrun image_view image_view image:=/utbots/display_emotions/image &");
 
   while (ros::ok())
   {
@@ -303,7 +303,6 @@ int main(int argc, char **argv)
           current_emotion_degree = desired_emotion_degree;
         }
         else
-          // desired_emotion_class = 8;
           face_change();
         pub.publish(ros_image[current_emotion_class][current_emotion_degree]);
       }
