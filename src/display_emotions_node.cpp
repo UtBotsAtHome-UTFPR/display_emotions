@@ -53,8 +53,6 @@ void face_change()
   {
     frame_direction = 0;
   }
-  std::cout<<current_emotion_class<<std::endl;
-  std::cout<<current_emotion_degree<<std::endl;
 }
 
 // loading the images to working memory
