@@ -268,10 +268,10 @@ int main(int argc, char **argv)
   image_transport::Publisher pub  = it.advertise("/utbots/display_emotions/image", 1);
 
   // parameters set in launch file
-  nh.param("/display_emotions_node/faces_cycle", Param_faces_cycle, true);
-  nh.param("/display_emotions_node/faces_cycle_delay", Param_faces_cycle_delay, 0.25);
-  nh.param<std::string>("/display_emotions_node/speech_gender", Param_speech_gender, "male");
-  nh.param("/display_emotions_node/reset_to_idle", Param_reset_to_idle, false);
+  nh.param("display_emotions_node/faces_cycle", Param_faces_cycle, true);
+  nh.param("display_emotions_node/faces_cycle_delay", Param_faces_cycle_delay, 0.25);
+  nh.param<std::string>("display_emotions_node/speech_gender", Param_speech_gender, "male");
+  nh.param("display_emotions_node/reset_to_idle", Param_reset_to_idle, false);
 
   if (Param_faces_cycle_delay <= 0)
     Param_faces_cycle_delay = 0.3;
