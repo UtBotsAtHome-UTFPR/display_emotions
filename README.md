@@ -1,5 +1,6 @@
 # display_emotions
-- ROS package that displays emotions through faces based on Plutchik's Wheel of Emotions [^1]. Working in Kinetic and Melodic.
+- ROS package that displays emotions through faces based on Plutchik's Wheel of Emotions [^1].
+- Working in Kinetic, Melodic and Noetic.
 
 [^1]: R. PLUTCHIK, R.; KELLERMAN, H. (Ed.). Emotion: theory, research and experience. New York: Academic press, 1986.
 
