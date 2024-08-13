@@ -31,7 +31,7 @@ And then publish a message of type String to the topic /emotion:
 
     rostopic pub /utbots/display_emotions/emotion std_msgs/String "data: 'joy'"
 
-## Parameters:
+## Parameters
 
 - **faces_cycle**: make the images cycle between the most intense emotion desired or stay still at the emotion set (default: true)
 
