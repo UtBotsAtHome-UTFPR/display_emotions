@@ -37,6 +37,8 @@ And then publish a message of type String to the topic /emotion:
 
 - **faces_cycle_delay**: the delay in seconds to shift between emotions (only active if faces_cycle is active)
 
+- **reset_to_idle**: if true displays only one cycle for a subscribed emotion and then resets the emotion to idle
+
 
 ## List of emotions
 
@@ -54,5 +56,3 @@ An **idle** face is displayed by default if no other emotion is requested. Also,
 |**anticipation**|**interest** and **much_interest**|**vigilance**|
 
 ![image](https://user-images.githubusercontent.com/78488285/210292061-99611369-8767-46bd-8c3e-35e19a0f1197.png)[^1]
-
-- **reset_to_idle**: if true displays only one cycle for a subscribed emotion and then resets the emotion to idle
