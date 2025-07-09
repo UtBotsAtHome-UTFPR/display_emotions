@@ -52,8 +52,7 @@ DisplayEmotionsNode::DisplayEmotionsNode() : Node("display_emotions_node") {
   if (Param_faces_cycle_delay <= 0)
     Param_faces_cycle_delay = 0.3;
 
-  image_transport::ImageTransport it(this->shared_from_this());
-  pub_ = it.advertise("/utbots/display_emotions/image", 1);
+  pub_ = image_transport::create_publisher(this, "/utbots/display_emotions/image");
 
   sub_ = this->create_subscription<std_msgs::msg::String>(
       "/utbots/display_emotions/emotion", 10,
