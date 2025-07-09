@@ -3,7 +3,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     return LaunchDescription([
-        # Display Emotions Node
+        # Publish Emotions Node
         Node(
             package='display_emotions',
             executable='display_emotions_node',
@@ -12,18 +12,19 @@ def generate_launch_description():
             parameters=[
                 {'faces_cycle': True},
                 {'faces_cycle_delay': 0.25},
-                {'reset_to_idle': True}
+                {'reset_to_idle': True},
+                {'aspect_ratio': '1024_600'},  # 1024_600 ou '4_3'
+                {'image_topic': '/utbots/display_emotions/image'}
             ]
         ),
 
-        # RQT Image View
+        # Show Emotino Images
         Node(
-            package='rqt_image_view',
-            executable='rqt_image_view',
-            name='rqt_image_view',
-            arguments=[],
-            remappings=[
-                ('/image', '/utbots/display_emotions/image')
-            ]
-        )
+            package='display_emotions',
+            executable='cv_image_view',
+            name='cv_image_view',
+            parameters=[{'image_topic': '/utbots/display_emotions/image'}],
+            output='screen',
+        ),
+
     ])

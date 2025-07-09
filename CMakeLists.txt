@@ -42,8 +42,14 @@ install(
 )
 
 install(DIRECTORY src/cropped
-    DESTINATION share/${PROJECT_NAME}/src/cropped
+    DESTINATION share/${PROJECT_NAME}/src/
 )
+
+add_executable(cv_image_view src/cv_image_view_node.cpp)
+ament_target_dependencies(cv_image_view rclcpp sensor_msgs cv_bridge OpenCV)
+
+install(TARGETS cv_image_view
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

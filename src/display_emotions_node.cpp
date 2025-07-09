@@ -29,8 +29,9 @@ private:
 
   bool Param_faces_cycle;
   double Param_faces_cycle_delay;
-  std::string Param_speech_gender;
   bool Param_reset_to_idle;
+  std::string Param_aspect_ratio;
+  std::string Param_image_topic;
 
   int frame_direction = 0;
   int current_emotion_degree = 1;
@@ -41,28 +42,39 @@ private:
 };
 
 DisplayEmotionsNode::DisplayEmotionsNode() : Node("display_emotions_node") {
+  // Declare parameters with defaults
   this->declare_parameter("faces_cycle", true);
   this->declare_parameter("faces_cycle_delay", 0.25);
   this->declare_parameter("reset_to_idle", false);
+  this->declare_parameter("aspect_ratio", "1024_600");  // or "4_3"
+  this->declare_parameter("image_topic", "/utbots/display_emotions/image");
 
+  // Get parameters
   this->get_parameter("faces_cycle", Param_faces_cycle);
   this->get_parameter("faces_cycle_delay", Param_faces_cycle_delay);
   this->get_parameter("reset_to_idle", Param_reset_to_idle);
+  this->get_parameter("aspect_ratio", Param_aspect_ratio);
+  this->get_parameter("image_topic", Param_image_topic);
 
   if (Param_faces_cycle_delay <= 0)
     Param_faces_cycle_delay = 0.3;
 
-  pub_ = image_transport::create_publisher(this, "/utbots/display_emotions/image");
+  // Publisher on parameterized topic
+  pub_ = image_transport::create_publisher(this, Param_image_topic);
 
+  // Subscriber to emotion string topic (fixed)
   sub_ = this->create_subscription<std_msgs::msg::String>(
       "/utbots/display_emotions/emotion", 10,
       std::bind(&DisplayEmotionsNode::callback, this, std::placeholders::_1));
 
   load_faces();
 
-  auto delay = std::chrono::duration<double>(1.0 / (Param_faces_cycle ? Param_faces_cycle_delay : 30.0));
+  // Calculate timer period from delay param (seconds)
+  double period_sec = Param_faces_cycle ? Param_faces_cycle_delay : (1.0 / 30.0);
+
   timer_ = this->create_wall_timer(
-      std::chrono::duration_cast<std::chrono::milliseconds>(delay),
+      std::chrono::duration_cast<std::chrono::milliseconds>(
+          std::chrono::duration<double>(period_sec)),
       std::bind(&DisplayEmotionsNode::publish_loop, this));
 }
 
@@ -86,12 +98,16 @@ void DisplayEmotionsNode::face_change() {
 }
 
 void DisplayEmotionsNode::load_faces() {
-  std::string folder = ament_index_cpp::get_package_share_directory("display_emotions") + "/cropped/4_3/";
+  // Build folder path based on aspect ratio parameter
+  std::string folder = ament_index_cpp::get_package_share_directory("display_emotions") + "/src/cropped/" + Param_aspect_ratio + "/";
 
   for (int i = 0; i < 9; i++) {
     for (int j = 1; j < 6; j++) {
       std::string path = folder + std::to_string(i) + std::to_string(j) + ".png";
       cv_image[i][j].image = cv::imread(path, cv::IMREAD_COLOR);
+      if (cv_image[i][j].image.empty()) {
+        RCLCPP_ERROR(this->get_logger(), "Failed to load image: %s", path.c_str());
+      }
       cv_image[i][j].encoding = "bgr8";
       cv_image[i][j].toImageMsg(ros_image[i][j]);
     }
@@ -132,6 +148,7 @@ void DisplayEmotionsNode::callback(const std_msgs::msg::String::SharedPtr msg) {
 
 void DisplayEmotionsNode::publish_loop() {
   pub_.publish(ros_image[current_emotion_class][current_emotion_degree]);
+
   if (current_emotion_degree == 1 || current_emotion_degree == desired_emotion_degree) {
     time_++;
     if (time_ > static_cast<int>(15 * Param_faces_cycle_delay)) {
