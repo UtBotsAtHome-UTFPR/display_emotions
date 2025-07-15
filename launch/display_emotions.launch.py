@@ -13,7 +13,7 @@ def generate_launch_description():
                 {'faces_cycle': True},
                 {'faces_cycle_delay': 0.25},
                 {'reset_to_idle': True},
-                {'aspect_ratio': '1024_600'},  # 1024_600 ou '4_3'
+                {'aspect_ratio': '1024_600_flipped'},  # 1024_600 ou '4_3'
                 {'image_topic': '/utbots/display_emotions/image'}
             ]
         ),
