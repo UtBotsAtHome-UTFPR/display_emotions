@@ -9,28 +9,28 @@
 ### Building
 ```bash
 # Clone repository
-cd catkin_ws/src/
+cd <ros2_ws>/src/
 git clone https://github.com/UtBotsAtHome-UTFPR/display_emotions.git
 
 # Compile workspace
-cd ..
-catkin_make
+cd <ros2_ws>
+colcon build
 ```
 
 ### Dependencies
 Please install the following dependencies before running the package:
 
-    sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
+    sudo apt install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
 
 ## Running
 
 To display an emotion, first run the launch file:
 
-    roslaunch display_emotions display_emotions.launch
+    ros2 launch display_emotions display_emotions.launch
 
 And then publish a message of type String to the topic /emotion:
 
-    rostopic pub /utbots/display_emotions/emotion std_msgs/String "data: 'joy'"
+    ros2 topic pub /utbots/display_emotions/emotion std_msgs/String "data: 'joy'"
 
 ## Parameters
 
